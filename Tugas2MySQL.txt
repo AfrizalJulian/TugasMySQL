@@ -1,0 +1,117 @@
+// Masuk ke ruang database menggunakan perintah command promt
+mysql -u root
+
+// Menampilkan daftar database yang sudah ada
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| dbpegawai          |
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+
+// Membuat database baru dengan nama produk
+MariaDB [(none)]> CREATE DATABASE Produk;
+
+// Menampilkan daftar database produk yang sudah dibuat
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| dbpegawai          |
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| produk             |
+| test               |
++--------------------+
+
+// Masuk ke database Produk
+MariaDB [(none)]> USE Produk;
+
+// Membuat tabel pembelian dengan field-field yang sesuai pada soal
+MariaDB [Produk]> CREATE TABLE pembelian(
+    ->  tanggal DATE,
+    -> nomor INT AUTO_INCREMENT PRIMARY KEY,
+    -> produk_id INT,
+    -> jumlah INT,
+    -> harga DECIMAL(10, 2),
+    -> vendor_id INT,
+    -> FOREIGN KEY (vendor_id) REFERENCES vendor(nomor));
+
+// Melihat deskripsi atau struktur dari tabel pembelian
+MariaDB [Produk]> DESCRIBE pembelian;
++-----------+---------------+------+-----+---------+----------------+
+| Field     | Type          | Null | Key | Default | Extra          |
++-----------+---------------+------+-----+---------+----------------+
+| tanggal   | date          | YES  |     | NULL    |                |
+| nomor     | int(11)       | NO   | PRI | NULL    | auto_increment |
+| produk_id | int(11)       | YES  |     | NULL    |                |
+| jumlah    | int(11)       | YES  |     | NULL    |                |
+| harga     | decimal(10,2) | YES  |     | NULL    |                |
+| vendor_id | int(11)       | YES  | MUL | NULL    |                |
++-----------+---------------+------+-----+---------+----------------+
+
+// Membuat tabel vendor dengan field-field yang sesuai pada soal
+MariaDB [Produk]> CREATE TABLE vendor(
+    -> nomor INT AUTO_INCREMENT PRIMARY KEY,
+    -> nama VARCHAR(255) NOT NULL,
+    -> kota VARCHAR(255),
+    -> kontak VARCHAR(255)
+    -> );
+
+// Melihat deskripsi atau struktur dari tabel vendor
+MariaDB [Produk]> DESCRIBE vendor;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| nomor  | int(11)      | NO   | PRI | NULL    | auto_increment |
+| nama   | varchar(255) | NO   |     | NULL    |                |
+| kota   | varchar(255) | YES  |     | NULL    |                |
+| kontak | varchar(255) | YES  |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+
+// Pengisian data pada tabel pembelian
+MariaDB [Produk]> INSERT INTO pembelian (tanggal, produk_id, jumlah, harga, vendor_id) VALUES
+    -> ('2023-10-01', 1, 7, 70.000, 1),
+    -> ('2023-10-02', 2, 10, 100.000, 2),
+    -> ('2023-10-03', 3, 5, 50.000, 3),
+    -> ('2023-10-04', 4, 12, 120.00, 4),
+    -> ('2023-10-05', 5, 15, 150.00, 5);
+
+// Melihat isi tabel yang sudah di buat pada tabel pembelian
+MariaDB [Produk]> SELECT * FROM pembelian;
++------------+-------+-----------+--------+--------+-----------+
+| tanggal    | nomor | produk_id | jumlah | harga  | vendor_id |
++------------+-------+-----------+--------+--------+-----------+
+| 2023-10-01 |     6 |         1 |      7 |  70.00 |         1 |
+| 2023-10-02 |     7 |         2 |     10 | 100.00 |         2 |
+| 2023-10-03 |     8 |         3 |      5 |  50.00 |         3 |
+| 2023-10-04 |     9 |         4 |     12 | 120.00 |         4 |
+| 2023-10-05 |    10 |         5 |     15 | 150.00 |         5 |
++------------+-------+-----------+--------+--------+-----------+
+
+// Pengisian data pada tabel vendor
+MariaDB [Produk]> INSERT INTO vendor (nama, kota, kontak) VALUES
+    -> ('Toyoto', 'Surabaya', '0812345'),
+    -> ('Suzuko', 'Jakarta', '0812346'),
+    -> ('Hondu', 'Semarang', '0812347'),
+    -> ('DoneGaBang', 'Palu', '0812348'),
+    -> ('Yuhuuuu', 'Tangerang', '0812349');
+
+// Melihat isi tabel yang sudah di buat pada tabel vendor
+MariaDB [Produk]> SELECT * FROM vendor;
++-------+------------+-----------+---------+
+| nomor | nama       | kota      | kontak  |
++-------+------------+-----------+---------+
+|     1 | Toyoto     | Surabaya  | 0812345 |
+|     2 | Suzuko     | Jakarta   | 0812346 |
+|     3 | Hondu      | Semarang  | 0812347 |
+|     4 | DoneGaBang | Palu      | 0812348 |
+|     5 | Yuhuuuu    | Tangerang | 0812349 |
++-------+------------+-----------+---------+
