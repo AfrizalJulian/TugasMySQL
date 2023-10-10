@@ -1,0 +1,359 @@
+// Masuk ke ruang database menggunakan perintah command promt
+mysql -u root
+
+// Membuat database baru dengan nama dbpos
+MariaDB [(none)]> CREATE database dbpos;
+
+// Menampilkan daftar database produk yang sudah dibuat
+MariaDB [dbpos]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| dbpegawai          |
+| dbpos              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| produk             |
+| test               |
++--------------------+
+
+// Worksheet 1 Tugas Mandiri
+
+// Membuat tabel produk dengan field-field yang sesuai pada soal
+MariaDB [dbpos]> create table produk(
+    -> id int not null auto_increment primary key,
+    -> kode varchar(10) unique,
+    -> nama varchar(45),
+    -> harga_beli DOUBLE,
+    -> harga_jual DOUBLE,
+    -> stok INT(11),
+    -> min_stok INT(11),
+    -> jenis_produk_id INT(11)
+    -> );
+
+// Melihat deskripsi atau struktur dari tabel produk
+MariaDB [dbpos]> DESCRIBE produk;
++-----------------+-------------+------+-----+---------+----------------+
+| Field           | Type        | Null | Key | Default | Extra          |
++-----------------+-------------+------+-----+---------+----------------+
+| id              | int(11)     | NO   | PRI | NULL    | auto_increment |
+| kode            | varchar(10) | YES  | UNI | NULL    |                |
+| nama            | varchar(45) | YES  |     | NULL    |                |
+| harga_beli      | double      | YES  |     | NULL    |                |
+| harga_jual      | double      | YES  |     | NULL    |                |
+| stok            | int(11)     | YES  |     | NULL    |                |
+| min_stok        | int(11)     | YES  |     | NULL    |                |
+| jenis_produk_id | int(11)     | YES  |     | NULL    |                |
++-----------------+-------------+------+-----+---------+----------------+
+
+// Membuat tabel pesanan_items dengan field-field yang sesuai pada soal
+MariaDB [dbpos]> create table pesanan_items(
+    -> id int auto_increment primary key,
+    -> produk_id INT(11),
+    -> pesanan_id INT(11),
+    -> qty INT(11),
+    -> harga DOUBLE
+    -> );
+
+// Melihat deskripsi atau struktur dari tabel pesanan_items
+MariaDB [dbpos]> DESCRIBE pesanan_items;
++------------+---------+------+-----+---------+----------------+
+| Field      | Type    | Null | Key | Default | Extra          |
++------------+---------+------+-----+---------+----------------+
+| id         | int(11) | NO   | PRI | NULL    | auto_increment |
+| produk_id  | int(11) | YES  |     | NULL    |                |
+| pesanan_id | int(11) | YES  |     | NULL    |                |
+| qty        | int(11) | YES  |     | NULL    |                |
+| harga      | double  | YES  |     | NULL    |                |
++------------+---------+------+-----+---------+----------------+
+
+// Membuat tabel vendor dengan field-field yang sesuai pada soal
+MariaDB [dbpos]> create table vendor(
+    -> id int auto_increment primary key,
+    -> nomor varchar(4) unique,
+    -> nama varchar(40),
+    -> kota varchar(30),
+    -> kontak varchar(30)
+    -> );
+
+// Melihat deskripsi atau struktur dari tabel vendor
+MariaDB [dbpos]> DESCRIBE vendor;
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| id     | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nomor  | varchar(4)  | YES  | UNI | NULL    |                |
+| nama   | varchar(40) | YES  |     | NULL    |                |
+| kota   | varchar(30) | YES  |     | NULL    |                |
+| kontak | varchar(30) | YES  |     | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+
+// Membuat tabel pembelian dengan field-field yang sesuai pada soal
+MariaDB [dbpos]> create table pembelian(
+    -> id int auto_increment primary key,
+    -> tanggal varchar(45),
+    -> nomor varchar(10),
+    -> produk_id INT(11),
+    -> jumlah INT(11),
+    -> harga DOUBLE,
+    -> vendor_id INT(11)
+    -> );
+
+// Melihat deskripsi atau struktur dari tabel pembelian
+MariaDB [dbpos]> DESCRIBE pembelian;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| id        | int(11)     | NO   | PRI | NULL    | auto_increment |
+| tanggal   | varchar(45) | YES  |     | NULL    |                |
+| nomor     | varchar(10) | YES  |     | NULL    |                |
+| produk_id | int(11)     | YES  |     | NULL    |                |
+| jumlah    | int(11)     | YES  |     | NULL    |                |
+| harga     | double      | YES  |     | NULL    |                |
+| vendor_id | int(11)     | YES  |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+
+// SOAL 1 Penambahan data pelanggan 
+
+// Pengisian 6 data lagi pada tabel pelanggan
+MariaDB [dbpos]> INSERT INTO pelanggan VALUES
+    -> (6, 'K006', 'Bowo', 'L', 'Jakarta', '2000-08-16', 'HaloBowo@yahoo.com', 5),
+    -> (7, 'K007', 'Surya', 'L', 'Bogor', '2003-06-02', 'Surya10@gmail.com', 3),
+    -> (8, 'K008', 'Anita', 'P', 'Bekasi', '2004-10-14', 'AnitaDisini0@gmail.com', 2),
+    -> (9, 'K009', 'Zahra', 'P', 'Malang', '2003-10-20', 'zahrauye@yahoo.com', 3),
+    -> (10, 'K0010', 'Thorik', 'L', 'Ambon', '2000-12-01', 'thorik1201@yahoo.com', 2),
+    -> (11, 'K0011', 'Albert', 'L', 'Jakarta', '2004-12-13', 'halobert13@yahoo.com', 1);
+
+// Melihat isi tabel yang sudah di buat pada tabel pelanggan
+MariaDB [dbpos]> SELECT * FROM pelanggan;
++----+-------+--------+------+-----------+------------+------------------------+----------+
+| id | kode  | nama   | jk   | tmp_lahir | tgl_lahir  | email                  | kartu_id |
++----+-------+--------+------+-----------+------------+------------------------+----------+
+|  1 | K001  | Dzul   | L    | Surabaya  | 2002-10-16 | Dzul123@gmail.com      |        1 |
+|  2 | K002  | Welly  | L    | Kediri    | 2001-04-09 | Well09@gmail.com       |        2 |
+|  3 | K003  | Putri  | P    | Bandung   | 2001-09-10 | PutriCans10@gmail.com  |        3 |
+|  4 | K004  | Kevin  | L    | Lamongan  | 2002-10-20 | kevin@yahoo.com        |        4 |
+|  5 | K005  | Julian | L    | Jakarta   | 2004-12-13 | xacta@yahoo.com        |        1 |
+|  6 | K006  | Bowo   | L    | Jakarta   | 2000-08-16 | HaloBowo@yahoo.com     |        5 |
+|  7 | K007  | Surya  | L    | Bogor     | 2003-06-02 | Surya10@gmail.com      |        3 |
+|  8 | K008  | Anita  | P    | Bekasi    | 2004-10-14 | AnitaDisini0@gmail.com |        2 |
+|  9 | K009  | Zahra  | P    | Malang    | 2003-10-20 | zahrauye@yahoo.com     |        3 |
+| 10 | K0010 | Thorik | L    | Ambon     | 2000-12-01 | thorik1201@yahoo.com   |        2 |
+| 11 | K0011 | Albert | L    | Jakarta   | 2004-12-13 | halobert13@yahoo.com   |        1 |
++----+-------+--------+------+-----------+------------+------------------------+----------+
+
+// SOAL 2 Penambahan data produk
+
+// Pengisian 5 data lagi pada tabel produk
+MariaDB [dbpos]> INSERT INTO produk VALUES
+    -> (6, 'MA', 'Meja', 200000, 400000, 8, 10, 1),
+    -> (7, 'TW', 'TupperWare', 40000, 55000, 10, 20, 2),
+    -> (8, 'TP', 'Tempat Pensil', 10000, 15000, 9, 15, 4),
+    -> (9, 'PL', 'Pecel Lele', 20000, 25000, 20, 35, 3),
+    -> (10, 'TS', 'Teh Sisri', 2000, 4000, 12, 24, 5);
+
+// Melihat isi tabel yang sudah di buat pada tabel produk
+MariaDB [dbpos]> SELECT * FROM produk;
++----+------+--------------------+------------+------------+------+----------+-----------------+
+| id | kode | nama               | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+|  1 | KA   | Kipas Angin Cosmis |     250000 |     400000 |    3 |        5 |               3 |
+|  2 | HP   | Redmi 9C           |    2000000 |    3000000 |    2 |        4 |               2 |
+|  3 | LP   | ASUS ROG           |   85000000 |   95000000 |    1 |        3 |               1 |
+|  4 | NB   | Nabati             |       2000 |       2500 |    7 |       10 |               6 |
+|  5 | BO   | Bakso              |      10000 |      16000 |   30 |      100 |               5 |
+|  6 | MA   | Meja               |     200000 |     400000 |    8 |       10 |               1 |
+|  7 | TW   | TupperWare         |      40000 |      55000 |   10 |       20 |               2 |
+|  8 | TP   | Tempat Pensil      |      10000 |      15000 |    9 |       15 |               4 |
+|  9 | PL   | Pecel Lele         |      20000 |      25000 |   20 |       35 |               3 |
+| 10 | TS   | Teh Sisri          |       2000 |       4000 |   12 |       24 |               5 |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+
+// Worksheet 2
+// SOAL 2.2
+
+// 1. Tampilkan data produk yang stoknya 3 dan 10
+MariaDB [dbpos]> SELECT * from produk WHERE stok=3 OR stok=10;
++----+------+--------------------+------------+------------+------+----------+-----------------+
+| id | kode | nama               | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+|  1 | KA   | Kipas Angin Cosmis |     250000 |     400000 |    3 |        5 |               3 |
+|  7 | TW   | TupperWare         |      40000 |      55000 |   10 |       20 |               2 |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+
+// 2. Tampilkan data produk yang harga jualnya kurang dari 5 juta tetapi lebih dari 500 ribu
+MariaDB [dbpos]> SELECT * FROM produk WHERE harga_jual < 5000000 AND harga_jual > 500000;
++----+------+----------+------------+------------+------+----------+-----------------+
+| id | kode | nama     | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+----------+------------+------------+------+----------+-----------------+
+|  2 | HP   | Redmi 9C |    2000000 |    3000000 |    2 |        4 |               2 |
++----+------+----------+------------+------------+------+----------+-----------------+
+
+// 3.Tampilkan data produk yang harus segera ditambah stoknya
+MariaDB [dbpos]> SELECT * FROM produk WHERE min_stok > stok;
++----+------+--------------------+------------+------------+------+----------+-----------------+
+| id | kode | nama               | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+|  1 | KA   | Kipas Angin Cosmis |     250000 |     400000 |    3 |        5 |               3 |
+|  2 | HP   | Redmi 9C           |    2000000 |    3000000 |    2 |        4 |               2 |
+|  3 | LP   | ASUS ROG           |   85000000 |   95000000 |    1 |        3 |               1 |
+|  4 | NB   | Nabati             |       2000 |       2500 |    7 |       10 |               6 |
+|  5 | BO   | Bakso              |      10000 |      16000 |   30 |      100 |               5 |
+|  6 | MA   | Meja               |     200000 |     400000 |    8 |       10 |               1 |
+|  7 | TW   | TupperWare         |      40000 |      55000 |   10 |       20 |               2 |
+|  8 | TP   | Tempat Pensil      |      10000 |      15000 |    9 |       15 |               4 |
+|  9 | PL   | Pecel Lele         |      20000 |      25000 |   20 |       35 |               3 |
+| 10 | TS   | Teh Sisri          |       2000 |       4000 |   12 |       24 |               5 |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+
+// 4. Tampilkan data pelanggan mulai dari yang paling muda
+MariaDB [dbpos]> SELECT * FROM pelanggan ORDER BY tgl_lahir DESC;
++----+-------+--------+------+-----------+------------+------------------------+----------+
+| id | kode  | nama   | jk   | tmp_lahir | tgl_lahir  | email                  | kartu_id |
++----+-------+--------+------+-----------+------------+------------------------+----------+
+| 11 | K0011 | Albert | L    | Jakarta   | 2004-12-13 | halobert13@yahoo.com   |        1 |
+|  5 | K005  | Julian | L    | Jakarta   | 2004-12-13 | xacta@yahoo.com        |        1 |
+|  8 | K008  | Anita  | P    | Bekasi    | 2004-10-14 | AnitaDisini0@gmail.com |        2 |
+|  9 | K009  | Zahra  | P    | Malang    | 2003-10-20 | zahrauye@yahoo.com     |        3 |
+|  7 | K007  | Surya  | L    | Bogor     | 2003-06-02 | Surya10@gmail.com      |        3 |
+|  4 | K004  | Kevin  | L    | Lamongan  | 2002-10-20 | kevin@yahoo.com        |        4 |
+|  1 | K001  | Dzul   | L    | Surabaya  | 2002-10-16 | Dzul123@gmail.com      |        1 |
+|  3 | K003  | Putri  | P    | Bandung   | 2001-09-10 | PutriCans10@gmail.com  |        3 |
+|  2 | K002  | Welly  | L    | Kediri    | 2001-04-09 | Well09@gmail.com       |        2 |
+| 10 | K0010 | Thorik | L    | Ambon     | 2000-12-01 | thorik1201@yahoo.com   |        2 |
+|  6 | K006  | Bowo   | L    | Jakarta   | 2000-08-16 | HaloBowo@yahoo.com     |        5 |
++----+-------+--------+------+-----------+------------+------------------------+----------+
+
+// 5. Tampilkan data pelanggan yang lahirnya di Jakarta dan gendernya perempuan
+MariaDB [dbpos]> SELECT * FROM pelanggan WHERE tmp_lahir='jakarta' AND jk='P';
+Empty (Karena di data saya tidak ada)
+
+// 6. Tampilkan data pelanggan yang ID nya 2, 4 dan 6
+MariaDB [dbpos]> SELECT * from pelanggan WHERE id IN (2,4,6);
++----+------+-------+------+-----------+------------+--------------------+----------+
+| id | kode | nama  | jk   | tmp_lahir | tgl_lahir  | email              | kartu_id |
++----+------+-------+------+-----------+------------+--------------------+----------+
+|  2 | K002 | Welly | L    | Kediri    | 2001-04-09 | Well09@gmail.com   |        2 |
+|  4 | K004 | Kevin | L    | Lamongan  | 2002-10-20 | kevin@yahoo.com    |        4 |
+|  6 | K006 | Bowo  | L    | Jakarta   | 2000-08-16 | HaloBowo@yahoo.com |        5 |
++----+------+-------+------+-----------+------------+--------------------+----------+
+
+// 7. Tampilkan data produk yang harganya antara 500 ribu sampai 6 juta
+MariaDB [dbpos]> SELECT * FROM produk WHERE harga_jual >= 500000 AND harga_jual<= 6000000;
++----+------+----------+------------+------------+------+----------+-----------------+
+| id | kode | nama     | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+----------+------------+------------+------+----------+-----------------+
+|  2 | HP   | Redmi 9C |    2000000 |    3000000 |    2 |        4 |               2 |
++----+------+----------+------------+------------+------+----------+-----------------+
+
+// SOAL 2.3
+
+// 1. Tampilkan produk yang kode awalnya huruf K dan huruf M
+MariaDB [dbpos]> SELECT * FROM produk WHERE kode LIKE 'K%' OR kode LIKE 'M%';
++----+------+--------------------+------------+------------+------+----------+-----------------+
+| id | kode | nama               | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+|  1 | KA   | Kipas Angin Cosmis |     250000 |     400000 |    3 |        5 |               3 |
+|  6 | MA   | Meja               |     200000 |     400000 |    8 |       10 |               1 |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+
+// 2. Tampilkan produk yang kode awalnya bukan huruf M
+MariaDB [dbpos]> SELECT * FROM produk WHERE kode NOT LIKE 'M%';
++----+------+--------------------+------------+------------+------+----------+-----------------+
+| id | kode | nama               | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+|  1 | KA   | Kipas Angin Cosmis |     250000 |     400000 |    3 |        5 |               3 |
+|  2 | HP   | Redmi 9C           |    2000000 |    3000000 |    2 |        4 |               2 |
+|  3 | LP   | ASUS ROG           |   85000000 |   95000000 |    1 |        3 |               1 |
+|  4 | NB   | Nabati             |       2000 |       2500 |    7 |       10 |               6 |
+|  5 | BO   | Bakso              |      10000 |      16000 |   30 |      100 |               5 |
+|  7 | TW   | TupperWare         |      40000 |      55000 |   10 |       20 |               2 |
+|  8 | TP   | Tempat Pensil      |      10000 |      15000 |    9 |       15 |               4 |
+|  9 | PL   | Pecel Lele         |      20000 |      25000 |   20 |       35 |               3 |
+| 10 | TS   | Teh Sisri          |       2000 |       4000 |   12 |       24 |               5 |
++----+------+--------------------+------------+------------+------+----------+-----------------+
+
+// 3. Tampilkan produk-produk televisi
+MariaDB [dbpos]> SELECT * FROM produk WHERE nama LIKE 'Televisi%';
+Empty (Karena pada data produk saya tidak memasukkan tv)
+
+// 4. Tampilkan pelanggan mengandung huruf 'SA'
+MariaDB [dbpos]> SELECT * FROM pelanggan WHERE nama LIKE 'S%';
++----+------+-------+------+-----------+------------+-------------------+----------+
+| id | kode | nama  | jk   | tmp_lahir | tgl_lahir  | email             | kartu_id |
++----+------+-------+------+-----------+------------+-------------------+----------+
+|  7 | K007 | Surya | L    | Bogor     | 2003-06-02 | Surya10@gmail.com |        3 |
++----+------+-------+------+-----------+------------+-------------------+----------+
+
+// 5. Tampilkan pelanggan yang lahirnya bukan di Jakarta dan mengandung huruf ‘yo‘
+MariaDB [dbpos]> SELECT * FROM pelanggan WHERE NOT tmp_lahir = 'Jakarta' AND tmp_lahir LIKE 'Yo%';
+Empty (Karena pada data pelanggan saya tidak memasukkan tempat lahir yang sama pada soal)
+
+// 6. Tampilkan pelanggan yang karakter huruf ke – 2 nya adalah A
+MariaDB [dbpos]> SELECT * FROM pelanggan WHERE nama LIKE '_A%';
++----+------+-------+------+-----------+------------+--------------------+----------+
+| id | kode | nama  | jk   | tmp_lahir | tgl_lahir  | email              | kartu_id |
++----+------+-------+------+-----------+------------+--------------------+----------+
+|  9 | K009 | Zahra | P    | Malang    | 2003-10-20 | zahrauye@yahoo.com |        3 |
++----+------+-------+------+-----------+------------+--------------------+----------+
+
+// SOAL 2.4
+
+// 1. Tampilkan 2 data produk termahal
+MariaDB [dbpos]> SELECT *FROM produk ORDER BY harga_beli DESC LIMIT 2;
++----+------+----------+------------+------------+------+----------+-----------------+
+| id | kode | nama     | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+----------+------------+------------+------+----------+-----------------+
+|  3 | LP   | ASUS ROG |   85000000 |   95000000 |    1 |        3 |               1 |
+|  2 | HP   | Redmi 9C |    2000000 |    3000000 |    2 |        4 |               2 |
++----+------+----------+------------+------------+------+----------+-----------------+
+
+// 2. Tampilkan produk yang paling murah
+MariaDB [dbpos]> SELECT *FROM produk ORDER BY harga_jual ASC LIMIT 1;
++----+------+--------+------------+------------+------+----------+-----------------+
+| id | kode | nama   | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+--------+------------+------------+------+----------+-----------------+
+|  4 | NB   | Nabati |       2000 |       2500 |    7 |       10 |               6 |
++----+------+--------+------------+------------+------+----------+-----------------+
+
+MariaDB [dbpos]> SELECT *FROM produk ORDER BY harga_beli ASC LIMIT 1;
++----+------+-----------+------------+------------+------+----------+-----------------+
+| id | kode | nama      | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+-----------+------------+------------+------+----------+-----------------+
+| 10 | TS   | Teh Sisri |       2000 |       4000 |   12 |       24 |               5 |
++----+------+-----------+------------+------------+------+----------+-----------------+
+
+// 3. Tampilkan produk yang stoknya paling banyak
+MariaDB [dbpos]> SELECT * FROM produk ORDER BY stok DESC LIMIT 1;
++----+------+-------+------------+------------+------+----------+-----------------+
+| id | kode | nama  | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+-------+------------+------------+------+----------+-----------------+
+|  5 | BO   | Bakso |      10000 |      16000 |   30 |      100 |               5 |
++----+------+-------+------------+------------+------+----------+-----------------+
+
+// 4. Tampilkan dua produk yang stoknya paling sedikit
+MariaDB [dbpos]> SELECT * FROM produk ORDER BY stok ASC LIMIT 2;
++----+------+----------+------------+------------+------+----------+-----------------+
+| id | kode | nama     | harga_beli | harga_jual | stok | min_stok | jenis_produk_id |
++----+------+----------+------------+------------+------+----------+-----------------+
+|  3 | LP   | ASUS ROG |   85000000 |   95000000 |    1 |        3 |               1 |
+|  2 | HP   | Redmi 9C |    2000000 |    3000000 |    2 |        4 |               2 |
++----+------+----------+------------+------------+------+----------+-----------------+
+
+// 5. Tampilkan pelanggan yang paling muda
+MariaDB [dbpos]> SELECT * FROM pelanggan ORDER BY tgl_lahir DESC LIMIT 1;
++----+------+--------+------+-----------+------------+-----------------+----------+
+| id | kode | nama   | jk   | tmp_lahir | tgl_lahir  | email           | kartu_id |
++----+------+--------+------+-----------+------------+-----------------+----------+
+|  5 | K005 | Julian | L    | Jakarta   | 2004-12-13 | xacta@yahoo.com |        1 |
++----+------+--------+------+-----------+------------+-----------------+----------+
+
+// 6. Tampilkan pelanggan yang paling tua
+MariaDB [dbpos]> SELECT * FROM pelanggan ORDER BY tgl_lahir ASC LIMIT 1;
++----+------+------+------+-----------+------------+--------------------+----------+
+| id | kode | nama | jk   | tmp_lahir | tgl_lahir  | email              | kartu_id |
++----+------+------+------+-----------+------------+--------------------+----------+
+|  6 | K006 | Bowo | L    | Jakarta   | 2000-08-16 | HaloBowo@yahoo.com |        5 |
++----+------+------+------+-----------+------------+--------------------+----------+
