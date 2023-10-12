@@ -1,0 +1,258 @@
+// Masuk ke ruang database menggunakan perintah command promt
+mysql -u root
+
+// SOAL 3.2
+
+// Berapa jumlah pelanggan yang tahun lahirnya 1998
+MariaDB [dbpos]> SELECT COUNT(*) as jumlah_pelanggan
+    -> FROM pelanggan
+    -> WHERE YEAR(tgl_lahir) = 1998;
++------------------+
+| jumlah_pelanggan |
++------------------+
+|                0 |
++------------------+
+(Pada data saya tidak ada yang lahir pada tahun 1998)
+
+// Berapa jumlah pelanggan perempuan yang tempat lahirnya di Jakarta
+MariaDB [dbpos]> SELECT COUNT(*) as jumlah_pelanggan_perempuan
+    -> FROM pelanggan
+    -> WHERE jk = 'perempuan' AND tmp_lahir= 'Jakarta';
++----------------------------+
+| jumlah_pelanggan_perempuan |
++----------------------------+
+|                          0 |
++----------------------------+
+(Pada data saya tidak ada yang perempuan yang tempat lahirnya di jakarta)
+
+// Berapa jumlah total stok semua produk yang harga jualnya dibawah 10rb
+MariaDB [dbpos]> SELECT COUNT(*) as total_stok
+    -> FROM produk
+    -> WHERE harga_jual < 10000;
++------------+
+| total_stok |
++------------+
+|          2 |
++------------+
+
+// Ada berapa produk yang mempunyai kode awal K
+MariaDB [dbpos]> SELECT COUNT(*) as awalan_produk
+    -> FROM produk
+    -> WHERE LEFT(kode, 1) = 'K';
++---------------+
+| awalan_produk |
++---------------+
+|             1 |
++---------------+
+
+// Berapa harga jual rata-rata produk yang diatas 1jt
+MariaDB [dbpos]> SELECT AVG(harga_jual) as rata_rata
+    -> FROM produk
+    -> WHERE harga_jual > 1000000;
++-----------+
+| rata_rata |
++-----------+
+|  49000000 |
++-----------+
+
+// Tampilkan jumlah stok yang paling besar
+MariaDB [dbpos]> SELECT MAX(stok) as stok_terbanyak
+    -> FROM produk;
++----------------+
+| stok_terbanyak |
++----------------+
+|             30 |
++----------------+
+
+// Ada berapa produk yang stoknya kurang dari minimal stok
+MariaDB [dbpos]> SELECT COUNT(*) as Jumlah_produk_yang_stok_kurang
+    -> FROM produk
+    -> WHERE stok < min_stok;
++--------------------------------+
+| Jumlah_produk_yang_stok_kurang |
++--------------------------------+
+|                             10 |
++--------------------------------+
+
+// Berapa total asset dari keseluruhan produk
+MariaDB [dbpos]> SELECT SUM(harga_beli * stok) as total_asset
+    -> FROM produk;
++-------------+
+| total_asset |
++-------------+
+|    92578000 |
++-------------+
+
+
+// SOAL 3.3
+
+// Tampilkan data produk : id, nama, stok dan informasi jika stok telah sampai batas minimal atau kurang dari minimum stok dengan informasi ‘segera belanja’ jika tidak ‘stok aman’.
+MariaDB [dbpos]> SELECT id, nama, stok,
+    -> CASE
+    -> WHEN stok <= min_stok THEN 'segera belanja'
+    -> ELSE 'stok aman'
+    -> END as status_stok
+    -> FROM produk;
++----+--------------------+------+----------------+
+| id | nama               | stok | status_stok    |
++----+--------------------+------+----------------+
+|  1 | Kipas Angin Cosmis |    3 | segera belanja |
+|  2 | Redmi 9C           |    2 | segera belanja |
+|  3 | ASUS ROG           |    1 | segera belanja |
+|  4 | Nabati             |    7 | segera belanja |
+|  5 | Bakso              |   30 | segera belanja |
+|  6 | Meja               |    8 | segera belanja |
+|  7 | TupperWare         |   10 | segera belanja |
+|  8 | Tempat Pensil      |    9 | segera belanja |
+|  9 | Pecel Lele         |   20 | segera belanja |
+| 10 | Teh Sisri          |   12 | segera belanja |
++----+--------------------+------+----------------+
+
+// Tampilkan data pelanggan: id, nama, umur dan kategori umur : jika umur < 17 → ‘muda’ , 17-55 → ‘Dewasa’, selainnya ‘Tua’
+MariaDB [dbpos]> SELECT id, nama, TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) as umur,
+    -> CASE
+    -> WHEN TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) < 17 THEN 'Muda'
+    -> WHEN TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) < 55 THEN 'Dewasa'
+    -> ELSE 'Tua'
+    -> END as kategori_umur
+    -> FROM pelanggan;
++----+--------+------+---------------+
+| id | nama   | umur | kategori_umur |
++----+--------+------+---------------+
+|  1 | Dzul   |   20 | Dewasa        |
+|  2 | Welly  |   22 | Dewasa        |
+|  3 | Putri  |   22 | Dewasa        |
+|  4 | Kevin  |   20 | Dewasa        |
+|  5 | Julian |   18 | Dewasa        |
+|  6 | Bowo   |   23 | Dewasa        |
+|  7 | Surya  |   20 | Dewasa        |
+|  8 | Anita  |   18 | Dewasa        |
+|  9 | Zahra  |   19 | Dewasa        |
+| 10 | Thorik |   22 | Dewasa        |
+| 11 | Albert |   18 | Dewasa        |
++----+--------+------+---------------+
+
+// Tampilkan data produk: id, kode, nama, dan bonus untuk kode ‘TV01’ →’DVD Player’ , ‘K001’ → ‘Rice Cooker’ selain dari diatas ‘Tidak Ada’
+MariaDB [dbpos]> SELECT id, kode, nama,
+    -> CASE
+    -> WHEN kode = 'TV01' THEN 'DVD PLAYER'
+    -> WHEN kode = 'K001' THEN 'RICE COOKCER'
+    -> ELSE 'Tidak Ada'
+    -> END as 'Bonus'
+    -> FROM produk;
++----+------+--------------------+-----------+
+| id | kode | nama               | Bonus     |
++----+------+--------------------+-----------+
+|  1 | KA   | Kipas Angin Cosmis | Tidak Ada |
+|  2 | HP   | Redmi 9C           | Tidak Ada |
+|  3 | LP   | ASUS ROG           | Tidak Ada |
+|  4 | NB   | Nabati             | Tidak Ada |
+|  5 | BO   | Bakso              | Tidak Ada |
+|  6 | MA   | Meja               | Tidak Ada |
+|  7 | TW   | TupperWare         | Tidak Ada |
+|  8 | TP   | Tempat Pensil      | Tidak Ada |
+|  9 | PL   | Pecel Lele         | Tidak Ada |
+| 10 | TS   | Teh Sisri          | Tidak Ada |
++----+------+--------------------+-----------+
+
+
+// SOAL 3.4
+
+// Tampilkan data statistik jumlah tempat lahir pelanggan
+MariaDB [dbpos]> SELECT tmp_lahir, COUNT(*) as jumlah_pelanggan
+    -> FROM pelanggan
+    -> GROUP BY tmp_lahir;
++-----------+------------------+
+| tmp_lahir | jumlah_pelanggan |
++-----------+------------------+
+| Ambon     |                1 |
+| Bandung   |                1 |
+| Bekasi    |                1 |
+| Bogor     |                1 |
+| Jakarta   |                3 |
+| Kediri    |                1 |
+| Lamongan  |                1 |
+| Malang    |                1 |
+| Surabaya  |                1 |
++-----------+------------------+
+
+// Tampilkan data pelanggan yang usianya dibawah rata usia pelanggan
+MariaDB [dbpos]> SELECT id, nama, TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) as umur
+    -> FROM pelanggan
+    -> WHERE TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) < (SELECT AVG(TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE())) FROM pelanggan);
++----+--------+------+
+| id | nama   | umur |
++----+--------+------+
+|  1 | Dzul   |   20 |
+|  4 | Kevin  |   20 |
+|  5 | Julian |   18 |
+|  7 | Surya  |   20 |
+|  8 | Anita  |   18 |
+|  9 | Zahra  |   19 |
+| 11 | Albert |   18 |
++----+--------+------+
+
+// Tampilkan data produk yang harganya diatas rata-rata harga produk
+MariaDB [dbpos]> SELECT id, nama, harga_jual
+    -> FROM produk
+    -> WHERE harga_jual > (SELECT AVG(harga_jual) FROM produk);
++----+----------+------------+
+| id | nama     | harga_jual |
++----+----------+------------+
+|  3 | ASUS ROG |   95000000 |
++----+----------+------------+
+
+// Tampilkan data pelanggan yang memiliki kartu dimana iuran tahunan kartu diatas 90rb
+MariaDB [dbpos]> SELECT p.*
+    -> FROM pelanggan p
+    -> JOIN kartu k ON p.kartu_id= k.id
+    -> WHERE k.iuran > 90000;
++----+-------+--------+------+-----------+------------+------------------------+----------+
+| id | kode  | nama   | jk   | tmp_lahir | tgl_lahir  | email                  | kartu_id |
++----+-------+--------+------+-----------+------------+------------------------+----------+
+|  1 | K001  | Dzul   | L    | Surabaya  | 2002-10-16 | Dzul123@gmail.com      |        1 |
+|  2 | K002  | Welly  | L    | Kediri    | 2001-04-09 | Well09@gmail.com       |        2 |
+|  3 | K003  | Putri  | P    | Bandung   | 2001-09-10 | PutriCans10@gmail.com  |        3 |
+|  5 | K005  | Julian | L    | Jakarta   | 2004-12-13 | xacta@yahoo.com        |        1 |
+|  6 | K006  | Bowo   | L    | Jakarta   | 2000-08-16 | HaloBowo@yahoo.com     |        5 |
+|  7 | K007  | Surya  | L    | Bogor     | 2003-06-02 | Surya10@gmail.com      |        3 |
+|  8 | K008  | Anita  | P    | Bekasi    | 2004-10-14 | AnitaDisini0@gmail.com |        2 |
+|  9 | K009  | Zahra  | P    | Malang    | 2003-10-20 | zahrauye@yahoo.com     |        3 |
+| 10 | K0010 | Thorik | L    | Ambon     | 2000-12-01 | thorik1201@yahoo.com   |        2 |
+| 11 | K0011 | Albert | L    | Jakarta   | 2004-12-13 | halobert13@yahoo.com   |        1 |
++----+-------+--------+------+-----------+------------+------------------------+----------+
+
+// Tampilkan statistik data produk dimana harga produknya dibawah rata-rata harga produk secara keseluruhan
+MariaDB [dbpos]> SELECT id, nama, harga_jual
+    -> FROM produk
+    -> WHERE harga_jual < (SELECT AVG(harga_jual) FROM produk);
++----+--------------------+------------+
+| id | nama               | harga_jual |
++----+--------------------+------------+
+|  1 | Kipas Angin Cosmis |     400000 |
+|  2 | Redmi 9C           |    3000000 |
+|  4 | Nabati             |       2500 |
+|  5 | Bakso              |      16000 |
+|  6 | Meja               |     400000 |
+|  7 | TupperWare         |      55000 |
+|  8 | Tempat Pensil      |      15000 |
+|  9 | Pecel Lele         |      25000 |
+| 10 | Teh Sisri          |       4000 |
++----+--------------------+------------+
+
+// Tampilkan data pelanggan yang memiliki kartu dimana diskon kartu yang diberikan diatas 3%
+MariaDB [dbpos]> SELECT p.*
+    -> FROM pelanggan p
+    -> JOIN kartu k ON p.kartu_id= k.id
+    -> WHERE k.diskon > 3;
++----+-------+--------+------+-----------+------------+-----------------------+----------+
+| id | kode  | nama   | jk   | tmp_lahir | tgl_lahir  | email                 | kartu_id |
++----+-------+--------+------+-----------+------------+-----------------------+----------+
+|  1 | K001  | Dzul   | L    | Surabaya  | 2002-10-16 | Dzul123@gmail.com     |        1 |
+|  3 | K003  | Putri  | P    | Bandung   | 2001-09-10 | PutriCans10@gmail.com |        3 |
+|  5 | K005  | Julian | L    | Jakarta   | 2004-12-13 | xacta@yahoo.com       |        1 |
+|  6 | K006  | Bowo   | L    | Jakarta   | 2000-08-16 | HaloBowo@yahoo.com    |        5 |
+|  7 | K007  | Surya  | L    | Bogor     | 2003-06-02 | Surya10@gmail.com     |        3 |
+|  9 | K009  | Zahra  | P    | Malang    | 2003-10-20 | zahrauye@yahoo.com    |        3 |
+| 11 | K0011 | Albert | L    | Jakarta   | 2004-12-13 | halobert13@yahoo.com  |        1 |
++----+-------+--------+------+-----------+------------+-----------------------+----------+
