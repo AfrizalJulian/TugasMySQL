@@ -1,7 +1,0 @@
-Berikut adalah Relasinya :
-
-1. Tabel Anggota dan  Pemesanan memiliki relasi satu ke satu, di mana ID_Anggota dalam tabel Pemesanan adalah foreign key yang mengacu pada ID_Anggota dalam tabel Pemesanan.
-
-2. Tabel Detail_Pemesanan memiliki relasi banyak-ke-satu dengan tabel Pemesanan dan Produk, di mana ID_Pemesanan adalah foreign key yang mengacu pada ID_Pemesanan dalam tabel Pemesanan dan ID_Produk adalah foreign key yang mengacu pada ID_Produk dalam tabel Produk.
-
-3. Tabel Pembayaran memiliki relasi banyak-ke-satu dengan tabel Pemesanan, di mana ID_Pemesanan dalam tabel Pembayaran adalah foreign key yang mengacu pada ID_Pemesanan dalam tabel Pemesanan.
